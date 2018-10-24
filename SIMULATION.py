@@ -99,6 +99,7 @@ class Wall:
     def __init__(self,master,cell):
         self.master=master
         self.cell=cell
+        
     def plot(self,zone):
         [xc,yc],e=self.cell.center,self.cell.ppc
         zone.create_rectangle(xc-e//2,yc-e//2,xc+e//2,yc+e//2,fill='black')
@@ -145,7 +146,8 @@ class Simulation(Tk):
     def build(self):
         e=self.ppc
         w,h=e*(int(self.width_entry.get())//e),e*(int(self.height_entry.get())//e)
-        self.entities = Entities (self,e,w,h)
+        if self.entities == None:
+            self.entities = Entities (self,e,w,h)
         Z = Building_zone(self,w,h)
         Z.lift()
         Z.focus_force()
