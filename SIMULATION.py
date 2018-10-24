@@ -9,7 +9,7 @@ from tkinter import *
 from random import *
 import numpy as np
 
-class Case:
+class Cell:
     def __init__(self,master,x,y,nx,ny,ppc,floors):
         self.master=master
         self.center=[x,y]     # Position in pixels of the center
@@ -22,7 +22,7 @@ class Case:
         self.content=wall
 
 class Viewing_zone:
-    def __init__(self,master):     #n is the number of cases per row/column, and size the number of pixels of width/height of the viewing zone
+    def __init__(self,master):     #n is the number of cells per row/column, and size the number of pixels of width/height of the viewing zone
         self.master=master
         
 class Building_zone(Toplevel):
@@ -40,7 +40,7 @@ class Building_zone(Toplevel):
         
     def clic(self,event):
         x,y=event.x,event.y
-        (nx,ny)=self.master.entities.which_case(x,y)      # les indices de la case sur laquelle on a cliqué
+        (nx,ny)=self.master.entities.which_cell(x,y)      # les indices de la case sur laquelle on a cliqué
         wall=Wall(self.master,self.master.entities.grid[nx][ny])
         self.master.entities.walls.append(wall)
         self.master.entities.grid[nx][ny].set_wall(wall)
@@ -62,12 +62,12 @@ class Entities:
         for i in range (nx):
             L,y=[],self.ppc//2
             for j in range (ny):
-                L.append(Case(self,x,y,i,j,e,1))
+                L.append(Cell(self,x,y,i,j,e,1))
                 y+=self.ppc
             self.grid.append(L)
             x+=self.ppc
     
-    def which_case(self,x,y):
+    def which_cell(self,x,y):                             # When given (x,y) coordinates, return the indices of the associated cell
         if x>self.size[0] or y>self.size[1] or x<0 or y<0:
             return None
         return (x//self.ppc,y//self.ppc)
@@ -89,18 +89,18 @@ class Human(Being):
         Being.__init__(self,master,pixposition,case,speed)
 
 class Building:
-    def __init__(self,master,cases):
+    def __init__(self,master,cells):
         self.master=master
         self.walls=[]
-        for c in cases:
+        for c in cells:
             self.walls.append(Wall(self,c))
             
 class Wall:
-    def __init__(self,master,case):
+    def __init__(self,master,cell):
         self.master=master
-        self.case=case
+        self.cell=cell
     def plot(self,zone):
-        [xc,yc],e=self.case.center,self.case.ppc
+        [xc,yc],e=self.cell.center,self.cell.ppc
         zone.create_rectangle(xc-e//2,yc-e//2,xc+e//2,yc+e//2,fill='black')
         
 class Simulation(Tk):
@@ -131,14 +131,15 @@ class Simulation(Tk):
         self.height_entry.grid(row=r,column=1)
         r+=1
         Button(self.zone_frame,text='gérer architecture',command=self.build).grid(row=r,column=0)
-        
         self.zone_frame.grid(row=0,column=0)
+        
         # Frame 2 : buildings
         self.building_frame = Frame(self)
         r,c=0,0
         Label(self.building_frame,text='Paramètre des bâtiments',bg='gray70').grid(row=r,column=c,columnspan=2)
-        self.building_frame.grid(row=0,column=1)
+        self.building_frame.grid(row=0,column=1,sticky=N)
         
+        # Run button
         Button(self,text="Demarer (Entrer)",command=self.run,height=4,width=20).grid(row=1,column=4)
     
     def build(self):
