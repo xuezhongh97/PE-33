@@ -8,12 +8,8 @@ Created on Wed Oct 17 16:42:27 2018
 from tkinter import *
 from random import *
 import numpy as np
-
-
-
-        
-
-
+from Entities import *
+from Zone import *
         
 class Simulation(Tk):
     def __init__(self):
