@@ -31,8 +31,11 @@ class Building_zone(Toplevel):
         self.master = master
         self.canvas = Canvas(self,width=w,height=h)
         self.canvas.grid()
-        self.canvas.bind('<Button-1>',self.clic)
-        for wall in self.master.entities.walls:
+        # Binding
+        self.canvas.bind('<B1-Motion>',self.clic)  # Allow to add walls by maintaining clic
+        self.canvas.bind('<Button-1>',self.clic)   # Allow to add a wall with clic
+        self.bind('<Escape>',self.leave)
+        for wall in self.master.entities.walls:    # Plot walls that are already saved when oppening a building zone
             wall.plot(self.canvas)
         
     def clic(self,event):
@@ -41,7 +44,10 @@ class Building_zone(Toplevel):
         wall=Wall(self.master,self.master.entities.grid[nx][ny])
         self.master.entities.walls.append(wall)
         self.master.entities.grid[nx][ny].set_wall(wall)
-        wall.plot(self.canvas)        
+        wall.plot(self.canvas)
+        
+    def leave(self,event):
+        self.destroy()
 
 class Entities:
     def __init__(self,master,e,w,h):
@@ -116,12 +122,12 @@ class Simulation(Tk):
         r+=1
         Label(self.zone_frame,text='largeur :',bg='gray70').grid(row=r,column=0)
         self.width_entry= Entry(self.zone_frame,bg='gray80',width=8)
-        self.width_entry.insert(END,'500')
+        self.width_entry.insert(END,'1500')
         self.width_entry.grid(row=r,column=1)
         r+=1
         Label(self.zone_frame,text='hauteur :',bg='gray70').grid(row=r,column=0)
         self.height_entry= Entry(self.zone_frame,bg='gray80',width=8)
-        self.height_entry.insert(END,'500')
+        self.height_entry.insert(END,'800')
         self.height_entry.grid(row=r,column=1)
         r+=1
         Button(self.zone_frame,text='gérer architecture',command=self.build).grid(row=r,column=0)
@@ -140,6 +146,8 @@ class Simulation(Tk):
         w,h=e*(int(self.width_entry.get())//e),e*(int(self.height_entry.get())//e)
         self.entities = Entities (self,e,w,h)
         Z = Building_zone(self,w,h)
+        Z.lift()
+        Z.focus_force()
     
     def run(self):
         return None
@@ -149,4 +157,5 @@ class Simulation(Tk):
 
 simulation=Simulation()
 simulation.focus_force()
+simulation.lift()
 simulation.mainloop()
