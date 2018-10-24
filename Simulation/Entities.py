@@ -12,6 +12,7 @@ class Entities:
     def __init__(self,master,e,w,h):
         self.master=master
         self.walls=[]
+        self.buildings=[]
         self.humans=[]
         self.zombies=[]
         self.grid=[]
@@ -34,3 +35,6 @@ class Entities:
                 y+=self.ppc
             self.grid.append(L)
             x+=self.ppc
+    
+    def reset_walls(self):
+        self.walls=[]
