@@ -17,7 +17,7 @@ class Cell:
     def set_wall(self):
         self.content='w'
     
-    def plot(self,zone):
+    def plot(self,zone):                    #permet d'afficher les batiments
         [xc,yc],e=self.center,self.master.ppc
         zone.create_rectangle(xc-e//2,yc-e//2,xc+e//2,yc+e//2,fill='black')
 
