@@ -10,6 +10,8 @@ from random import *
 import numpy as np
 from Entities import *
 from Zone import *
+
+# The main window, with link to every other windows
         
 class Simulation(Tk):
     def __init__(self):
@@ -50,7 +52,7 @@ class Simulation(Tk):
         # Run button
         Button(self,text="Demarer (Entrer)",command=self.run,height=4,width=20).grid(row=1,column=4)
     
-    def build(self):
+    def build(self):   # Open a building zone to manage buildings and walls
         e=self.ppc
         w,h=e*(int(self.width_entry.get())//e),e*(int(self.height_entry.get())//e)
         if self.entities == None:
@@ -59,7 +61,7 @@ class Simulation(Tk):
         Z.lift()
         Z.focus_force()
     
-    def run(self):
+    def run(self):     # Open a viewing zone and launch the simulation
         return None
         
     def leave(self,event):
