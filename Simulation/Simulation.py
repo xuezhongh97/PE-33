@@ -39,14 +39,14 @@ class Simulation(Tk):
         self.height_entry= Entry(self.zone_frame,bg='gray80',width=8)
         self.height_entry.insert(END,'800')
         self.height_entry.grid(row=r,column=1)
-        r+=1
-        Button(self.zone_frame,text='gérer architecture',command=self.build).grid(row=r,column=0)
         self.zone_frame.grid(row=0,column=0)
         
         # Frame 2 : buildings
         self.building_frame = Frame(self)
         r,c=0,0
         Label(self.building_frame,text='Paramètre des bâtiments',bg='gray70').grid(row=r,column=c,columnspan=2)
+        r+=1
+        Button(self.building_frame,text='gérer architecture',command=self.build).grid(row=r,column=c)
         self.building_frame.grid(row=0,column=1,sticky=N)
         
         # Run button
