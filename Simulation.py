@@ -10,6 +10,8 @@ from random import *
 import numpy as np
 from Entities import *
 from Zone import *
+
+# The main window, with link to every other windows
         
 class Simulation(Tk):
     def __init__(self):
