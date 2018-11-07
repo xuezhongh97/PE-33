@@ -32,7 +32,7 @@ class Entities:
         for i in range (nx):
             L,y=[],self.ppc//2
             for j in range (ny):
-                L.append(Cell(self,x,y,i,j,self.ppc,1))
+                L.append(Cell(self,x,y,i,j,1))
                 y+=self.ppc
             self.grid.append(L)
             x+=self.ppc
