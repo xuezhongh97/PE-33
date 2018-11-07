@@ -55,8 +55,10 @@ class Simulation(Tk):
     def build(self):   # Open a building zone to manage buildings and walls
         e=self.ppc
         w,h=e*(int(self.width_entry.get())//e),e*(int(self.height_entry.get())//e)
-        if self.entities == None:
+        
+        if self.entities == None:                  # The first time that a building zone is opened, self.entities is initialized with the parameters of the zone
             self.entities = Entities (self,e,w,h)
+            
         Z = Building_zone(self,w,h)
         Z.lift()
         Z.focus_force()
