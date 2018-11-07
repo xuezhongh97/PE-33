@@ -7,9 +7,13 @@ Created on Wed Oct 24 14:41:44 2018
 from tkinter import *
 from Building import *
 
+# Viewing zone is the window where we see the simulation, no input from the user, just the simulation's run
+
 class Viewing_zone:
     def __init__(self,master):     #n is the number of cells per row/column, and size the number of pixels of width/height of the viewing zone
         self.master=master
+        
+# Building zone is the window where we manage building's configuration
         
 class Building_zone(Toplevel):
     def __init__(self,master,w,h):
@@ -34,12 +38,12 @@ class Building_zone(Toplevel):
         # Binding
         self.canvas.bind('<B1-Motion>',self.clic)  # Allow to add walls by maintaining clic
         self.canvas.bind('<Button-1>',self.clic)   # Allow to add a wall with clic
-        self.canvas.bind('<Button-3>',self.coordinates)
+        self.canvas.bind('<Button-3>',self.coordinates)  # Allow to print the coordinates of the point that is right-clicked
         self.bind('<Escape>',self.leave)
         
     def clic(self,event):
         x,y=event.x,event.y
-        (nx,ny)=self.master.entities.which_cell(x,y)      # les indices de la case sur laquelle on a cliqué
+        (nx,ny)=self.master.entities.which_cell(x,y)      # The indices of the case that were clicked on
         wall=Wall(self.master,self.master.entities.grid[nx][ny])
         self.master.entities.walls.append(wall)
         self.master.entities.grid[nx][ny].set_wall(wall)
