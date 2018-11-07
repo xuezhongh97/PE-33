@@ -11,16 +11,17 @@ from Building import *
 class Entities:
     def __init__(self,master,e,w,h):
         self.master=master
-        self.walls=[]
+        self.walls=[]      # list of cells' indices (nx,ny)
         self.buildings=[]
         self.humans=[]
         self.zombies=[]
-        self.grid=[]
+        self.grid=[]      # list of all the cells
         self.size=[w,h]
         self.ppc=e       # Pixels per case : number of pixels of length of a case
         self.reset_grid()
     
     def which_cell(self,x,y):                             # When given (x,y) coordinates, return the indices of the associated cell
+                                                          # Complexity 0(1)
         if x>self.size[0] or y>self.size[1] or x<0 or y<0:
             return None
         return (x//self.ppc,y//self.ppc)

@@ -44,10 +44,9 @@ class Building_zone(Toplevel):
     def clic(self,event):
         x,y=event.x,event.y
         (nx,ny)=self.master.entities.which_cell(x,y)      # The indices of the case that were clicked on
-        wall=Wall(self.master,self.master.entities.grid[nx][ny])
-        self.master.entities.walls.append(wall)
-        self.master.entities.grid[nx][ny].set_wall(wall)
-        wall.plot(self.canvas)
+        self.master.entities.walls.append((nx,ny))
+        self.master.entities.grid[nx][ny].set_wall()
+        self.master.entities.grid[nx][ny].plot(self.canvas)
         
     def coordinates(self,event):
         x,y=event.x,event.y

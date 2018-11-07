@@ -15,21 +15,14 @@ class Cell:
         self.floors=floors
         self.content=None
         
-    def set_wall(self,wall):
-        self.content=wall
+    def set_wall(self):
+        self.content='w'
+    
+    def plot(self,zone):
+        [xc,yc],e=self.center,self.ppc
+        zone.create_rectangle(xc-e//2,yc-e//2,xc+e//2,yc+e//2,fill='black')
 
 class Building:
-    def __init__(self,master,cells):
+    def __init__(self,master):
         self.master=master
-        self.walls=[]
-        for c in cells:
-            self.walls.append(Wall(self,c))
-            
-class Wall:
-    def __init__(self,master,cell):
-        self.master=master
-        self.cell=cell
-        
-    def plot(self,zone):
-        [xc,yc],e=self.cell.center,self.cell.ppc
-        zone.create_rectangle(xc-e//2,yc-e//2,xc+e//2,yc+e//2,fill='black')
+        self.walls=[]     # list of cells
