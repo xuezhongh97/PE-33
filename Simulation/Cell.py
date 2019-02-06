@@ -1,9 +1,9 @@
 class Cell():
-    def __init__(self,x,y):
+    def __init__(self,x,y, content=0, sound=0):
         self.x=x
         self.y=y
-        self.content=0
-        self.sound=0
+        self.content=content
+        self.sound=sound
         self.humains=[]
         self.zombies=[]
 
