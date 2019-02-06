@@ -1,15 +1,18 @@
 #carte[x][y][idBatiment, sound, 1 si mur]
 
 def genSound(x0,y0,volume):
-    if x0<0 or x0>=xMax or y0<0 or y0>=yMax:
+    if x0<0 or x0>=xMax or y0<0 or y0>=yMax or carte[x0][y0].mur:
         print("error")
         return()
 
-    carte[x0][y0].sound=volume
+    carte[x0][y0].sound+=volume
     if volume==1:
         return()
     moves=[(0,1), (0,-1), (1,0), (-1,0), (-1,-1), (-1,1), (1,-1), (1,1)]
     suivants=[(x0,y0,volume)]
+
+    visited=[[False for _ in range(2*volume+1)] for _ in range(2*volume+1)]
+    visited[volume][volume]=True
 
     while suivants:
         new=[]
@@ -17,8 +20,9 @@ def genSound(x0,y0,volume):
             for dx,dy in moves:
                 x,y=a+dx,b+dy
                 value=M-(dx**2+dy**2)**(1/2)
-                if x>=0 and x<xMax and y>=0 and y<yMax and carte[x][y].mur==0 and carte[x][y].sound<value and value>0:
-                    carte[x][y].sound=round(value)
+                if x>=0 and x<xMax and y>=0 and y<yMax and carte[x][y].mur==0 and not(visited[x-x0+volume][y-y0+volume]) and value>0:
+                    carte[x][y].sound+=round(value)
+                    visited[x-x0+volume][y-y0+volume]=True
                     new.append((x,y,value))
         suivants=new[:]
 
@@ -39,7 +43,7 @@ if __name__=="__main__":
     for k in range(4):
         carte[k][2].mur=1
 
-    genSound(0,0,9)
+    genSound(2,0,9)
 
     for x in range(xMax):
         for y in range(yMax):
