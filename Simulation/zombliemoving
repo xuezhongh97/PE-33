@@ -1,0 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Feb  6 14:40:58 2019
+
+@author: xuezh
+"""
+from math import atan
+
+def zombiemovement(self,G,t):
+    u,v=self.detectSound(G,self.position,self.hearing)
+    angle=2*atan(v/(u+(u**2+v**2)**(1/2)))
+    self.speed=(self.speed(0),angle)
+    self.move(t)
+    
