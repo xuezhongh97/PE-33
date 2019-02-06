@@ -1,8 +1,34 @@
 from tkinter import *
-from casesMur import line
+	
+def line(x1,y1,x2,y2):
 
-def isin(a,b,c):	# Return boolean : point a is in the rectangle with corner points b and c
-	return (b[0]<=a[0]<=c[0] or c[0]<=a[0]<=b[0]) and (b[1]<=a[1]<=c[1] or c[1]<=a[1]<=b[1])
+    if x1==x2:
+        y1,y2=min(y1,y2),max(y1,y2)
+        return([(x1, y) for y in range(y1, y2+1)])
+    if y1==y2:
+        x1,x2=min(x1,x2),max(x1,x2)
+        return([(x, y1) for x in range(x1, x2+1)])
+
+    L=[(x1,y1)]
+    x,y=x1,y1
+    dx=(x2-x1)//abs(x2-x1)
+    inverse=False
+    if y2<y1:
+        y2=y1+abs(y2-y1)
+        inverse=True
+    a=(y2-y1)/(x2-x1)
+    while x!=x2 or y!=y2:
+        if y<=a*(x-x1)+y1:
+            y+=1
+        else:
+            x+=dx
+        L.append((x,y))
+    if inverse:
+        for i in range(len(L)):
+            x,y=L[i]
+            L[i]=(x,y1-(y-y1))
+    return(L)
+
 	
 
 class Map_editor(Tk):
