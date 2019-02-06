@@ -22,12 +22,16 @@ class Being:
         self.strength=strength              #physical trait (don't change)
         self.agilty=agility                 #agility trait (don't change)
         self.mental=mental                  #mental trait (don't change)
+        self.stop=0                         #countdown when the entity stop moving
     
     def move(self,t):
-        self.postion[0]+=t*self.speed[0]*np.cos(self.speed[1])                  #new position of the being
-        self.postion[1]+=t*self.speed[0]*np.sin(self.speed[1])
-        self.cell=self.master.which_cell(self.postion[0],self.postion[1])
-    
+        if self.stop==0:                                                            #verif that the entity can move
+            self.postion[0]+=t*self.speed[0]*np.cos(self.speed[1])                  #new position of the being
+            self.postion[1]+=t*self.speed[0]*np.sin(self.speed[1])
+            self.cell=self.master.which_cell(self.postion[0],self.postion[1])
+        else:                                                                       #decrease by one the countdown
+            self.stop-=1
+
 class Zombie(Being):
     def __init__(self,master,postion,cell,speed):
         zombie_vision=
@@ -63,14 +67,21 @@ class Human(Being):
     def eaten(self):
         self.master.humans.remove(self)
     
-    def fight(H,Z):
-        proba=rd.random()*200-100                   #fight system: uniform law
-        if H.strength-Z.strength<=proba-5:          #zombie stronger than human
+    def fight(self,Zincell):
+        Zstrength=0
+        for Z in Zincell:
+            Zstrength+=Z.stength
+        proba=rd.random()                                          #fight system: uniform law.
+        if 1-self.strength/(2*(Zstrength+self.strength))>=proba:          #zombie(s) stronger than human
             if proba_zombie>=rd.random():           #2 cases: eaten or transformed
-                H.zombification()
+                self.zombification()
             else:
-                H.eaten()
-        elif H.strength-Z.strength>=proba+5:        #human stronger than zombie
-            Z.death()
-        else:                                       #human and zombie as strong: human manage to get away
-            Z.stop()
+                self.eaten()
+        elif self.strength/(2*(Zstrength+self.strength))<=proba:        #human stronger than zombie(s)
+            for Z in Zincell:
+                Z.death()
+        else:                                       #human and zombie(s) as strong: human manage to get away
+            for Z in Zincell:
+                Z.stop=2
+    
+    def see(self)
