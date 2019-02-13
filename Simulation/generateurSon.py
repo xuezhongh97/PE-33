@@ -1,7 +1,7 @@
-#carte[x][y][idBatiment, sound, 1 si mur]
+#content : 0 rien, 1 porte, 2 mur
 
 def genSound(x0,y0,volume):
-    if x0<0 or x0>=xMax or y0<0 or y0>=yMax or carte[x0][y0].mur:
+    if x0<0 or x0>=xSize or y0<0 or y0>=ySize or carte[x0][y0].content==2:
         print("error")
         return()
 
@@ -20,7 +20,11 @@ def genSound(x0,y0,volume):
             for dx,dy in moves:
                 x,y=a+dx,b+dy
                 value=M-(dx**2+dy**2)**(1/2)
-                if x>=0 and x<xMax and y>=0 and y<yMax and carte[x][y].mur==0 and not(visited[x-x0+volume][y-y0+volume]) and value>0:
+                if x>=0 and x<xSize and y>=0 and y<ySize and carte[x][y].content!=2 and not(visited[x-x0+volume][y-y0+volume]) and value>0.5:
+                    if carte[x][y].content==1:
+                        value-=attenuation_porte
+                        if value<=0.5:
+                            continue
                     carte[x][y].sound+=round(value)
                     visited[x-x0+volume][y-y0+volume]=True
                     new.append((x,y,value))
@@ -29,23 +33,31 @@ def genSound(x0,y0,volume):
 
 if __name__=="__main__":
     class Case():
-        def __init__(self, mur):
+        def __init__(self, content):
             self.sound=0
-            self.mur=mur
+            self.content=content
 
         def __str__(self):
-            if self.mur!=0:
+            if self.content==2:
                 return("#")
+            if self.content==1 and self.sound==0:
+                return("|")
+            if self.sound==0:
+                return(".")
             return(str(self.sound))
 
-    xMax,yMax=10,10
-    carte=[[Case(0) for _ in range(yMax)] for _ in range(xMax)]
+    attenuation_porte=2
+    xSize,ySize=10,10
+    carte=[[Case(0) for _ in range(ySize)] for _ in range(xSize)]
     for k in range(4):
-        carte[k][2].mur=1
+        carte[k][2].content=2
+    carte[1][2].content=1
 
-    genSound(2,0,9)
+    genSound(0,0,6)
+    genSound(8,8,2)
+    genSound(6,7,2)
 
-    for x in range(xMax):
-        for y in range(yMax):
+    for x in range(xSize):
+        for y in range(ySize):
             print(carte[x][y], end=" ")
         print("\n")

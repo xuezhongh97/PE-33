@@ -1,5 +1,3 @@
-from math import atan
-
 def detectSound(G,x,y,R):
     u,v=0,0
     for i in range(x-R,x+R+1):
@@ -9,4 +7,4 @@ def detectSound(G,x,y,R):
                 volume=G[i][j].sound
                 u+=volume*(i-x)/r
                 v+=volume*(j-y)/r
-    return(2*atan(v/(u+(u**2+v**2)**(1/2))))
+    return(u,v)

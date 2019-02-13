@@ -1,12 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 24 14:42:18 2018
-
-@author: Nicolas
-"""
-
 from tkinter import *
-from Building import *
 
 class Entities:
     def __init__(self,master,e,w,h):
@@ -19,13 +11,13 @@ class Entities:
         self.size=[w,h]
         self.ppc=e       # Pixels per case : number of pixels of length of a case
         self.reset_grid()
-    
+
     def which_cell(self,x,y):                             # When given (x,y) coordinates, return the indices of the associated cell
                                                           # Complexity 0(1)
         if x>self.size[0] or y>self.size[1] or x<0 or y<0:
             return None
         return (x//self.ppc,y//self.ppc)
-    
+
     def reset_grid(self):
         self.grid=[]
         x,y,nx,ny=self.ppc//2,self.ppc//2,self.size[0]//self.ppc,self.size[1]//self.ppc
@@ -36,6 +28,6 @@ class Entities:
                 y+=self.ppc
             self.grid.append(L)
             x+=self.ppc
-    
+
     def reset_walls(self):
         self.walls=[]
