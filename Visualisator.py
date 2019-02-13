@@ -24,7 +24,7 @@ class Visualisator(Tk):
 		self.canvas.grid(row=0,column=0,columnspan=4)
 		self.testbut = Button(self,text="Test",command=lambda: self.plot_humain([(13,13),(24,4)]))
 		self.testbut.grid(row=1,column=1)
-		self.testbut2 = Button(self,text="Test2",command=lambda: self.plot_humain([(20,5),(20,31)]))
+		self.testbut2 = Button(self,text="Test2",command=lambda: self.plot_zombie([(20,5),(20,31)]))
 		self.testbut2.grid(row=1,column=2)
 		
 		# Load map
@@ -108,10 +108,10 @@ class Visualisator(Tk):
 		self.humains=[]
 		for (x,y) in L:
 			px,py=int(self.ppc*x),int(self.ppc*y)
-			self.humains.append(self.canvas.create_oval(px-d,py-d,px+d,py+d,fill='#f08080'))
+			self.humains.append(self.canvas.create_oval(px-d,py-d,px+d,py+d,fill='#ba4a00'))
 			
 	def plot_zombie(self,L):
-		d=int(self.ppc/5)
+		d=int(self.ppc/3.5)
 		for oval in self.zombies:
 			self.canvas.delete(oval)
 		self.zombies=[]
