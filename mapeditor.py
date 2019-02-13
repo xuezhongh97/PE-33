@@ -36,10 +36,10 @@ class Map_editor(Tk):
 		Tk.__init__(self)
 
 		# Data
-		self.x_size=15    # In cells
-		self.y_size=15    # In cells
-		self.ppc=30         # pixel per cell
-		self.onclic='w'    # what to do when the user clic on a cell
+		self.x_size=80    # In cells
+		self.y_size=40    # In cells
+		self.ppc=15         # pixel per cell
+		self.onclic='w'    # w : wall, wl : line of wall, b : building, f : food, r : rest 
 		self.nclic = 1     # first or second clic for a new wall of line
 		self.firstcase = (0,0)     # first clic for a wall of line
 		self.grid=[[[0,0,0] for _ in range (self.y_size)] for _ in range (self.x_size)]
@@ -48,7 +48,7 @@ class Map_editor(Tk):
 		# Each cell is [x,y,z] where y is noise level and z is wall/not wall
 
 		#Canvas
-		self.canvas = Canvas(self,width=self.x_size*self.ppc,height=self.y_size*self.ppc)
+		self.canvas = Canvas(self,width=self.x_size*self.ppc,height=self.y_size*self.ppc,bg='white')
 		self.canvas.grid(row=0,column=0,rowspan=10)
 
 		#Save/Open
@@ -61,9 +61,11 @@ class Map_editor(Tk):
 		self.clear_button = Button(self.frame2,text='Nettoyer',command=self.clear)
 		self.frame3 = Frame(self)
 		self.onclic_label = Label(self.frame3,text='Cliquer pour ajouter un mur')
-		self.onclicwall_button = Button(self.frame3,text='Mur au clic',command=lambda: self.finish('w'))
+		self.onclicwall_button = Button(self.frame3,text='Mur au clic',command=lambda: self.setclic('w'))
 		self.onclicline_button = Button(self.frame3,text='Ligne au clic',command=lambda: self.setclic('wl'))
 		self.onclicbuild_button = Button(self.frame3,text='Batiment au clic',command=lambda: self.setclic('b'))
+		self.onclicfood_button = Button(self.frame3,text='Zone food au clic',command=lambda: self.setclic('f'))
+		self.onclicrest_button = Button(self.frame3,text='Zone repos au clic',command=lambda: self.setclic('r'))
 
 		#Layout
 		self.frame1.grid(row=0,column=1)
@@ -81,6 +83,8 @@ class Map_editor(Tk):
 		self.onclicwall_button.grid(row=2,column=0)
 		self.onclicline_button.grid(row=3,column=0)
 		self.onclicbuild_button.grid(row=4,column=0)
+		self.onclicfood_button.grid(row=5,column=0)
+		self.onclicrest_button.grid(row=6,column=0)
 
 		# Binding
 		self.canvas.bind('<Button-1>',self.clic)
@@ -89,6 +93,7 @@ class Map_editor(Tk):
 
 	def clic(self,event):
 		nx,ny=event.x//self.ppc,event.y//self.ppc
+		print(self.onclic)
 		if self.onclic == 'w':
 			self.add_wall(nx,ny)
 		elif self.onclic == 'wl':
@@ -99,7 +104,6 @@ class Map_editor(Tk):
 				self.add_line(self.firstcase[0],self.firstcase[1],nx,ny)
 				self.nclic-=1
 		elif self.onclic == 'b':
-			
 			if self.nclic == 1:
 				self.firstcase = (nx,ny)
 				self.nclic+=1
@@ -108,6 +112,12 @@ class Map_editor(Tk):
 				self.add_build(self.firstcase[0],self.firstcase[1],nx,ny)
 			else:
 				self.adddoor(nx,ny)
+		elif self.onclic == 'f':			# food zone on cilc
+			self.grid[nx][ny][2]=3
+			self.color(nx,ny,'yellow')
+		elif self.onclic == 'r':			# rest zone on cilc
+			self.grid[nx][ny][2]=4
+			self.color(nx,ny,'green')
 			
 	def rclic(self,event):
 		self.nclic = 1
@@ -144,7 +154,7 @@ class Map_editor(Tk):
 		self.batiments.append([nx1,ny1,nx2,ny2])
 
 	def color(self,nx,ny,color):
-		self.canvas.create_rectangle(nx*self.ppc,ny*self.ppc,(nx+1)*self.ppc-1,(ny+1)*self.ppc-1,fill=color)
+		self.canvas.create_rectangle(nx*self.ppc,ny*self.ppc,(nx+1)*self.ppc-1,(ny+1)*self.ppc-1,fill=color,outline=color)
 
 	def finish(self):
 		filename='saves/'+self.filename_entry.get()
@@ -184,7 +194,7 @@ class Map_editor(Tk):
 					elif self.grid[i][j][2]==2:
 						self.color(i,j,'blue')
 			batims=batis.split(' ')
-			self.batiments=[b.split('/') for b in batiments]
+			self.batiments=[b.split('/') for b in batims]
 		except:
 			pass
 
@@ -199,7 +209,7 @@ class Map_editor(Tk):
 	def setclic(self,txt):  # change from one wall per clic to a line of wall per two clics
 		self.nclic=1
 		if txt == 'w':
-			self.onclic = 'w'    # wl for wall line
+			self.onclic = 'w'
 			self.onclic_label.config(text='Cliquer pour ajouter un mur')
 		elif txt == 'wl':
 			self.onclic = 'wl'
@@ -207,6 +217,13 @@ class Map_editor(Tk):
 		elif txt == 'b': 
 			self.onclic = 'b'
 			self.onclic_label.config(text='Cliquer deux fois pour \n un batiment, puis une \n fois pour la porte, \n puis clic droit')
+		elif txt == 'f':
+			self.onclic = 'f'
+			self.onclic_label.config(text='Cliquer pour ajouter \n une case nourriture')
+		if txt == 'r':
+			self.onclic = 'r'
+			self.onclic_label.config(text='Cliquer pour ajouter \n une zone de repos')
+		
 	def leave(self,event):
 		self.destroy()
 
