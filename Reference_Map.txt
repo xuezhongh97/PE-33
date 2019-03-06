@@ -14,3 +14,7 @@ Map.txt :
 	- 2 is a door
 	- 3 is a food cell
 	- 4 is a rest cell
+
+-	The last line of the text represent all the buildings, separed by a space. For each building there
+	is a string with the convention: (where x,y are coordinates for a cell)
+	topleftcorner[x]/topleftcorner[y]/bottomrightcorner[x]/bottomrightcorner[y]/door1[x]/door1[y]/door2[x]/...
