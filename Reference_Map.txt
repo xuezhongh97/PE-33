@@ -1,0 +1,16 @@
+Map.txt : 
+-	Contain the information about every cells. Lines of cell are separated by a '\n' (linebreak),
+	cells are separated by a space. For each cell, there is a 'a/b/c/...' string where a,b,c... are
+	caracteristics of the cell.
+
+-	The first parameter a is the Id of the parent building for a wall/door. It is 0 for any other
+	type of cell.
+
+-	The second parameter b is the level of noise in the cell.
+
+-	The third parameter c is the type of the cell :
+	- 0 is empty
+	- 1 is a wall
+	- 2 is a door
+	- 3 is a food cell
+	- 4 is a rest cell
