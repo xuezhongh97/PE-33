@@ -1,4 +1,4 @@
-def detectSound(self,G,x,y):
+def DetectSound(x,y):
     u,v=0,0
     if x>0:
     	u-=G[x-1][y].sound
