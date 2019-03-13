@@ -17,6 +17,31 @@ class Being:
         else:                                                                       #decrease by one the countdown
             self.stop-=1
 
+    def detectSound(self):
+        x,y=self.cell
+        u,v=0,0
+        if x>0:
+            u-=G[x-1][y].sound
+            if y>0:
+                u-=G[x-1][y-1].sound/2**0.5
+            if y<yMax:
+                u-=G[x-1][y+1].sound/2**0.5
+
+        if x<xMax-1:
+            u+=G[x+1][y].sound
+            if y>0:
+                u-=G[x+1][y-1].sound/2**0.5
+            if y<yMax:
+                u-=G[x+1][y+1].sound/2**0.5
+
+        if y>0:
+            v-=G[x][y-1].sound
+        if y<yMax:
+            v+=G[x][y+1].sound
+
+        return(u,v)
+        #pas pris en compte hearing et le son en (x,y) ici
+
 class Zombie(Being):
     def __init__(self,position,speed):
         Being.__init__(self,position,speed,z_vision,z_hearing,z_strength,z_agility,z_lifespan)
@@ -24,20 +49,6 @@ class Zombie(Being):
 
     def death(self):
         Zombies.remove(self)
-
-    def detectSound(self):
-        x,y,R=self.position, self.hearing
-        u,v=0,0
-        for i in range(x-R,x+R+1):
-            for j in range(y-R,y+R+1):
-                r=((i-x)**2+(j-y)**2)**(1/2)
-                if r<=R and r!=0:
-                    volume=G[i][j].sound
-                    u+=volume*(i-x)/r
-                    v+=volume*(j-y)/r
-        if (u**2+v**2)**0.5<self.hearing:
-            return(0,0)
-        return(u,v)
 
 class Human(Being):
     def __init__(self,position,speed,vision,hearing,strength,agility,morality,coldblood,behavior):
@@ -50,20 +61,6 @@ class Human(Being):
         self.stress=0                  #quantity of stress (determine the quality of the decisions)
         self.stamina=100                #stamina (decrease when running) 0=no more running
         self.knowing=False                  #knowing the zombie invasion
-
-    def detectSound(self):
-        x,y,R=self.position, self.hearing
-        u,v=0,0
-        for i in range(x-R,x+R+1):
-            for j in range(y-R,y+R+1):
-                r=((i-x)**2+(j-y)**2)**(1/2)
-                if r<=R and r!=0:
-                    volume=carte[i][j].sound
-                    u+=volume*(i-x)/r
-                    v+=volume*(j-y)/r
-        if (u**2+v**2)**0.5<self.hearing:
-            return(0,0)
-        return(u,v)
 
     def zombification(self):
         time.sleep(z_incubation_time*dt)                #waiting for the human to turn into a zombie
