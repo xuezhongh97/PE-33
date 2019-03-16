@@ -1,3 +1,5 @@
+from Parameters import *
+
 class Being:
     def __init__(self,position,speed,vision,hearing,strength,agility):
         self.position=position      # (x,y) for position in pixels
@@ -21,37 +23,40 @@ class Being:
         x,y=self.cell
         u,v=0,0
         if x>0:
-            u-=G[x-1][y].sound
+            u-=Map[x-1][y].sound
             if y>0:
-                u-=G[x-1][y-1].sound/2**0.5
-            if y<yMax:
-                u-=G[x-1][y+1].sound/2**0.5
+                u-=Map[x-1][y-1].sound/2**0.5
+            if y<ySize:
+                u-=Map[x-1][y+1].sound/2**0.5
 
-        if x<xMax-1:
-            u+=G[x+1][y].sound
+        if x<xSize-1:
+            u+=Map[x+1][y].sound
             if y>0:
-                u-=G[x+1][y-1].sound/2**0.5
-            if y<yMax:
-                u-=G[x+1][y+1].sound/2**0.5
+                u-=Map[x+1][y-1].sound/2**0.5
+            if y<ySize:
+                u-=Map[x+1][y+1].sound/2**0.5
 
         if y>0:
-            v-=G[x][y-1].sound
-        if y<yMax:
-            v+=G[x][y+1].sound
+            v-=Map[x][y-1].sound
+        if y<ySize:
+            v+=Map[x][y+1].sound
 
         return(u,v)
         #pas pris en compte hearing et le son en (x,y) ici
 
 class Zombie(Being):
-    def __init__(self,position,speed):
-        Being.__init__(self,position,speed,z_vision,z_hearing,z_strength,z_agility,z_lifespan)
+    def __init__(self,position):
+        Being.__init__(self,position,z_speed,z_vision,z_hearing,z_strength,z_agility)
         self.lifespan=z_lifespan
+
+    def action(self):
+        pass
 
     def death(self):
         Zombies.remove(self)
 
 class Human(Being):
-    def __init__(self,position,speed,vision,hearing,strength,agility,morality,coldblood,behavior):
+    def __init__(self,position,speed,strength,agility,morality,coldblood,behavior):
         Being.__init__(self,position,speed,h_vision,h_hearing,strength,agility)
         self.morality=morality              #define the morality of the human
         self.coldblood=coldblood          #define how the human endure the stress
@@ -61,6 +66,9 @@ class Human(Being):
         self.stress=0                  #quantity of stress (determine the quality of the decisions)
         self.stamina=100                #stamina (decrease when running) 0=no more running
         self.knowing=False                  #knowing the zombie invasion
+
+    def action(self):
+        pass
 
     def zombification(self):
         time.sleep(z_incubation_time*dt)                #waiting for the human to turn into a zombie
