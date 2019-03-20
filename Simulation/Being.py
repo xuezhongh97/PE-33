@@ -102,11 +102,8 @@ class Human(Being):
             L=self.strength/(2*(Zstrength+self.strength))
         else:
             L=Z.Strength/(2*(Zstrength+self.strength))
-        if self.strength/(Zstrength+self.strength)-L>=proba:         #zombie(s) stronger than human
-            if proba_zombie>=rd.random():           #2 cases: eaten or transformed
-                self.zombification()
-            else:
-                self.eaten()
+        if self.strength/(Zstrength+self.strength)-L>=proba:         #zombie(s) stronger than human         
+            self.zombification()                                        #2 cases: eaten or transformed
         elif self.strength/(Zstrength+self.strength)+L<=proba:        #human stronger than zombie(s)
             for Z in Zincell:
                 Z.death()
