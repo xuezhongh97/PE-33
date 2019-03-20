@@ -2,14 +2,14 @@ from random import random, randint
 from Parameters import *
 from Being import *
 
-def create_zombie(Map):
+def create_zombie(Master):
     x,y=randint(0, xSize-1), randint(0, ySize-1)
-    while Map[x][y].content!=0 or Map[x][y].idBuilding!=0:
+    while Master.Map[x][y].content!=0 or Master.Map[x][y].idBuilding!=0:
         x,y=randint(0, xSize-1), randint(0, ySize-1)
 
-    return(Zombie((x,y)))
+    return(Zombie(Master, (x,y)))
 
-def create_human(Map):
+def create_human(Master):
     ability=random()
     if ability<=pAbilities[0]:
         ability=weak
@@ -43,7 +43,7 @@ def create_human(Map):
         coldblood=stressed
 
     x,y=randint(0, xSize-1), randint(0, ySize-1)
-    while Map[x][y].content!=0:
+    while Master.Map[x][y].content!=0:
         x,y=randint(0, xSize-1), randint(0, ySize-1)
 
-    return(Human((x,y),ability[0], ability[1], ability[2], coldblood, morality, behavior))
+    return(Human(Master, (x,y),ability[0], ability[1], ability[2], coldblood, morality, behavior))

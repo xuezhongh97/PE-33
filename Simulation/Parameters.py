@@ -11,14 +11,13 @@ attenuation_porte=3
 nZombies=3
 nHumans=3
 
-
 #Zombie parameters
 z_speed=1
 z_vision=1
 z_hearing=1
 z_strength=1
 z_agility=1
-z_lifespan=1
+z_lifespan=5
 z_incubation_time=10
 
 #Human parameters

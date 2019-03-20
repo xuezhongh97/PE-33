@@ -1,7 +1,8 @@
 from Parameters import *
 
 class Being:
-    def __init__(self,position,speed,vision,hearing,strength,agility):
+    def __init__(self,Master,position,speed,vision,hearing,strength,agility):
+        self.Master=Master
         self.position=position      # (x,y) for position in pixels
         self.cell=(int(position[0]),int(position[1]))                  # The cell the being is in
         self.speed=speed                # (vr,vteta) vr is the norm and vteta the angle of the speed
@@ -23,41 +24,49 @@ class Being:
         x,y=self.cell
         u,v=0,0
         if x>0:
-            u-=Map[x-1][y].sound
+            u-=self.Master.Map[x-1][y].sound
             if y>0:
-                u-=Map[x-1][y-1].sound/2**0.5
+                u-=self.Master.Map[x-1][y-1].sound/2**0.5
             if y<ySize:
-                u-=Map[x-1][y+1].sound/2**0.5
+                u-=self.Master.Map[x-1][y+1].sound/2**0.5
 
         if x<xSize-1:
-            u+=Map[x+1][y].sound
+            u+=self.Master.Map[x+1][y].sound
             if y>0:
-                u-=Map[x+1][y-1].sound/2**0.5
+                u-=self.Master.Map[x+1][y-1].sound/2**0.5
             if y<ySize:
-                u-=Map[x+1][y+1].sound/2**0.5
+                u-=self.Master.Map[x+1][y+1].sound/2**0.5
 
         if y>0:
-            v-=Map[x][y-1].sound
+            v-=self.Master.Map[x][y-1].sound
         if y<ySize:
-            v+=Map[x][y+1].sound
+            v+=self.Master.Map[x][y+1].sound
 
         return(u,v)
         #pas pris en compte hearing et le son en (x,y) ici
 
 class Zombie(Being):
-    def __init__(self,position):
-        Being.__init__(self,position,z_speed,z_vision,z_hearing,z_strength,z_agility)
+    def __init__(self,Master,position,*z_speed):
+        Being.__init__(self,Master,position,z_speed,z_vision,z_hearing,z_strength,z_agility)
         self.lifespan=z_lifespan
 
+    def info(self):
+        x,y=self.cell
+        print("Race: Zombie, case: x={}, y={}".format(x,y))
+
     def action(self):
-        pass
+
+
+        self.lifespan-=1
+        if self.lifespan==0:
+            self.death()
 
     def death(self):
-        Zombies.remove(self)
+        self.Master.Zombies.remove(self)
 
 class Human(Being):
-    def __init__(self,position,speed,strength,agility,morality,coldblood,behavior):
-        Being.__init__(self,position,speed,h_vision,h_hearing,strength,agility)
+    def __init__(self,Master,position,speed,strength,agility,morality,coldblood,behavior):
+        Being.__init__(self,Master,position,speed,h_vision,h_hearing,strength,agility)
         self.morality=morality              #define the morality of the human
         self.coldblood=coldblood          #define how the human endure the stress
         self.behavior=behavior              #define the type of survival (hide,flee,fight,...)
@@ -67,21 +76,25 @@ class Human(Being):
         self.stamina=100                #stamina (decrease when running) 0=no more running
         self.knowing=False                  #knowing the zombie invasion
 
+    def info(self):
+        x,y=self.cell
+        print("Race: Humain, case: x={}, y={}".format(x,y))
+
     def action(self):
         pass
 
     def zombification(self):
         time.sleep(z_incubation_time*dt)                #waiting for the human to turn into a zombie
-        Humans.remove(self)              #removing the entity from class human
-        Zombies.add(Zombie(self.position,0))             #creating a new zombie
+        self.Master.Humans.remove(self)              #removing the entity from class human
+        self.MasterZombies.append(Zombie(self.Master,self.position,0))             #creating a new zombie
 
     def eaten(self):
         time.sleep(z_incubation_time*dt)                #waiting for the human to turn into a zombie
-        Humans.remove(self)
+        self.Master.Humans.remove(self)
 
     def fight(self):
         x,y=self.cell
-        Zincell=carte[x][y].zombies
+        Zincell=self.Master.Map[x][y].zombies
         Zstrength=0
         genSound(x,y,10)
         for Z in Zincell:
