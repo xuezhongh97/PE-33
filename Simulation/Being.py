@@ -65,7 +65,7 @@ class Zombie(Being):
         self.Master.Zombies.remove(self)
 
 class Human(Being):
-    def __init__(self,Master,position,speed,strength,agility,morality,coldblood,behavior):
+    def __init__(self,Master,position,speed,strength,agility,morality,coldblood,behavior,group):
         Being.__init__(self,Master,position,speed,h_vision,h_hearing,strength,agility)
         self.morality=morality              #define the morality of the human
         self.coldblood=coldblood          #define how the human endure the stress
@@ -75,11 +75,15 @@ class Human(Being):
         self.stress=0                  #quantity of stress (determine the quality of the decisions)
         self.stamina=100                #stamina (decrease when running) 0=no more running
         self.knowing=False                  #knowing the zombie invasion
+        self.group=group                #define the social group of the human
 
     def info(self):
         x,y=self.cell
         print("Race: Humain, case: x={}, y={}".format(x,y))
-
+    
+    def set_group(self,new_group):
+        self.group=new_group
+    
     def action(self):
         pass
 
@@ -94,13 +98,16 @@ class Human(Being):
         for Z in Zinrange:
             Zstrength+=Z.stength
         proba=rd.random()                                          #fight system: uniform law.
-        if 1-self.strength/(Zstrength+self.strength))<self.strength/(2*(Zstrength+self.strength))
-        if 1-self.strength/(2*(Zstrength+self.strength))>=proba:          #zombie(s) stronger than human
+        if self.strength/(Zstrength+self.strength)<0.5:
+            L=self.strength/(2*(Zstrength+self.strength))
+        else:
+            L=Z.Strength/(2*(Zstrength+self.strength))
+        if self.strength/(Zstrength+self.strength)-L>=proba:         #zombie(s) stronger than human
             if proba_zombie>=rd.random():           #2 cases: eaten or transformed
                 self.zombification()
             else:
                 self.eaten()
-        elif self.strength/(2*(Zstrength+self.strength))<=proba:        #human stronger than zombie(s)
+        elif self.strength/(Zstrength+self.strength)+L<=proba:        #human stronger than zombie(s)
             for Z in Zincell:
                 Z.death()
         else:                                       #human and zombie(s) as strong: human manage to get away
