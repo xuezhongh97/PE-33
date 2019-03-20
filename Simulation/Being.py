@@ -88,27 +88,21 @@ class Human(Being):
         self.Master.Humans.remove(self)              #removing the entity from class human
         self.MasterZombies.append(Zombie(self.Master,self.position,0))             #creating a new zombie
 
-    def eaten(self):
-        time.sleep(z_incubation_time*dt)                #waiting for the human to turn into a zombie
-        self.Master.Humans.remove(self)
-
     def fight(self):
-        x,y=self.cell
-        Zincell=self.Master.Map[x][y].zombies
         Zstrength=0
-        genSound(x,y,10)
-        for Z in Zincell:
+        genSound(self.cell[0],self.cell[1],Bruit)
+        for Z in Zinrange:
             Zstrength+=Z.stength
-        proba=random()                                          #fight system: uniform law.
+        proba=rd.random()                                          #fight system: uniform law.
+        if 1-self.strength/(Zstrength+self.strength))<self.strength/(2*(Zstrength+self.strength))
         if 1-self.strength/(2*(Zstrength+self.strength))>=proba:          #zombie(s) stronger than human
-
-            if proba_zombie>=random():           #2 cases: eaten or transformed
+            if proba_zombie>=rd.random():           #2 cases: eaten or transformed
                 self.zombification()
             else:
                 self.eaten()
         elif self.strength/(2*(Zstrength+self.strength))<=proba:        #human stronger than zombie(s)
             for Z in Zincell:
                 Z.death()
-        else:                                       #human and zombie(s) as strong: human manages to get away
+        else:                                       #human and zombie(s) as strong: human manage to get away
             for Z in Zincell:
                 Z.stop=2
