@@ -7,6 +7,7 @@ class Master:
         self.Map=[]
         self.Humans=[]
         self.Zombies=[]
+        self.Groups=[]
 
 Master=Master()
 
